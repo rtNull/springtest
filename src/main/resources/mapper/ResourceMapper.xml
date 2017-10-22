@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyq.springtest.dao.ResourceMapper">
+    <resultMap id="BaseResultMap" type="com.zyq.springtest.bean.Resource">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="chapter_id" property="chapterId" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="date" property="date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.zyq.springtest.bean.Resource" extends="BaseResultMap">
+        <result column="url" property="url" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, chapter_id, name,type,date
+  </sql>
+    <sql id="Blob_Column_List">
+    url
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from resource
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectBySelective" resultMap="ResultMapWithBLOBs" parameterType="com.zyq.springtest.bean.Resource">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from resource
+        <where>
+            <if test="chapterId != null and chapterId>0">
+                and chapter_id = #{chapterId,jdbcType=INTEGER}
+            </if>
+            <if test="name != null and !&quot;&quot;.equals(name.trim())">
+                and name like '%' #{name,jdbcType=VARCHAR} '%'
+            </if>
+            <if test="type != null and !&quot;&quot;.equals(type.trim())">
+                and type like '%' #{type,jdbcType=VARCHAR} '%'
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from resource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByChapterId" parameterType="java.lang.Integer">
+        delete from resource
+        where chapter_id = #{chapterId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.zyq.springtest.bean.Resource">
+    insert into resource (id, chapter_id, name, type,date,
+      url)
+    values (#{id,jdbcType=INTEGER}, #{chapterId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}
+    , #{type,jdbcType=VARCHAR},#{date,jdbcType=TIMESTAMP},
+      #{url,jdbcType=LONGVARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.zyq.springtest.bean.Resource">
+        insert into resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="chapterId != null">
+                chapter_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="date != null">
+                date,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="chapterId != null">
+                #{chapterId,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=TIMESTAMP},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zyq.springtest.bean.Resource">
+        update resource
+        <set>
+            <if test="chapterId != null">
+                chapter_id = #{chapterId,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type= #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="date != null">
+                date= #{date,jdbcType=TIMESTAMP},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zyq.springtest.bean.Resource">
+    update resource
+    set chapter_id = #{chapterId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      type= #{type,jdbcType=VARCHAR},
+      date= #{date,jdbcType=TIMESTAMP},
+      url = #{url,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.zyq.springtest.bean.Resource">
+    update resource
+    set chapter_id = #{chapterId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR}
+      type= #{type,jdbcType=VARCHAR},
+      date= #{date,jdbcType=TIMESTAMP},
+      url = #{url,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

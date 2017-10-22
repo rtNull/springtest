@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyq.springtest.dao.QuestionMapper">
+    <resultMap id="BaseResultMap" type="com.zyq.springtest.bean.Question">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="chapter_id" property="chapterId" jdbcType="INTEGER"/>
+        <result column="answer" property="answer" jdbcType="VARCHAR"/>
+        <result column="ischoice" property="ischoice" jdbcType="BIT"/>
+        <result column="option_a" property="optionA" jdbcType="VARCHAR"/>
+        <result column="option_b" property="optionB" jdbcType="VARCHAR"/>
+        <result column="option_c" property="optionC" jdbcType="VARCHAR"/>
+        <result column="option_d" property="optionD" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.zyq.springtest.bean.Question" extends="BaseResultMap">
+        <result column="title" property="title" jdbcType="LONGVARCHAR"/>
+        <result column="explanation" property="explanation" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, chapter_id, answer, ischoice,option_a,option_b,option_c,option_d
+  </sql>
+    <sql id="Blob_Column_List">
+    title, explanation
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from question
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByChapterId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from question
+        where chapter_id = #{chapterId,jdbcType=INTEGER}
+    </select>
+    <select id="selectBySelective" resultMap="ResultMapWithBLOBs"
+            parameterType="com.zyq.springtest.bean.Question">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from question
+        <where>
+            <if test="chapterId != null and 0!=chapterId">
+                and chapter_id=#{chapterId,jdbcType=INTEGER}
+            </if>
+            <if test="title != null and !&quot;&quot;.equals(title.trim())">
+                and title like '%' #{title,jdbcType=VARCHAR} '%'
+            </if>
+            <if test="ischoice != null">
+                and ischoice = #{ischoice,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from question
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByChapterId" parameterType="java.lang.Integer">
+    delete from question
+    where chapter_id = #{chapterId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.zyq.springtest.bean.Question">
+    insert into question (id, chapter_id, answer, 
+      ischoice,option_a,option_b,option_c,option_d, title, explanation
+      )
+    values (#{id,jdbcType=INTEGER}, #{chapterId,jdbcType=INTEGER}, #{answer,jdbcType=VARCHAR}, 
+      #{ischoice,jdbcType=BIT}, #{optionA,jdbcType=VARCHAR}, #{optionB,jdbcType=VARCHAR}, #{optionC,jdbcType=VARCHAR}, #{optionD,jdbcType=VARCHAR},
+      #{title,jdbcType=LONGVARCHAR}, #{explanation,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.zyq.springtest.bean.Question">
+        insert into question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="chapterId != null">
+                chapter_id,
+            </if>
+            <if test="answer != null">
+                answer,
+            </if>
+            <if test="ischoice != null">
+                ischoice,
+            </if>
+            <if test="optionA != null">
+                option_a,
+            </if>
+            <if test="optionB!= null">
+                option_b,
+            </if>
+            <if test="optionC != null">
+                option_c,
+            </if>
+            <if test="optionD != null">
+                option_d,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="explanation != null">
+                explanation,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="chapterId != null">
+                #{chapterId,jdbcType=INTEGER},
+            </if>
+            <if test="answer != null">
+                #{answer,jdbcType=VARCHAR},
+            </if>
+            <if test="ischoice != null">
+                #{ischoice,jdbcType=BIT},
+            </if>
+            <if test="optionA != null">
+                #{option_a,jdbcType=VARCHAR},
+            </if>
+            <if test="optionB!= null">
+                #{option_b,jdbcType=VARCHAR},
+            </if>
+            <if test="optionC != null">
+                #{option_c,jdbcType=VARCHAR},
+            </if>
+            <if test="optionD != null">
+                #{option_d,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="options != null">
+                #{explanation,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zyq.springtest.bean.Question">
+        update question
+        <set>
+            <if test="chapterId != null">
+                chapter_id = #{chapterId,jdbcType=INTEGER},
+            </if>
+            <if test="answer != null">
+                answer = #{answer,jdbcType=VARCHAR},
+            </if>
+            <if test="ischoice != null">
+                ischoice = #{ischoice,jdbcType=BIT},
+            </if>
+            <if test="optionA != null">
+                option_a= #{optionA,jdbcType=VARCHAR},
+            </if>
+            <if test="optionB!= null">
+                option_b= #{optionB,jdbcType=VARCHAR},
+            </if>
+            <if test="optionC != null">
+                option_c= #{optionC,jdbcType=VARCHAR},
+            </if>
+            <if test="optionD != null">
+                option_d= #{optionD,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="explanation != null">
+                explanation = #{explanation,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

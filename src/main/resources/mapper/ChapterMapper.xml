@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyq.springtest.dao.ChapterMapper">
+    <resultMap id="BaseResultMap" type="com.zyq.springtest.bean.Chapter">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="course_id" property="courseId" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, course_id, title, create_date
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from chapter
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByCourseId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from chapter
+        where course_id = #{courseId,jdbcType=INTEGER}
+    </select>
+    <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.zyq.springtest.bean.Chapter">
+        select
+        <include refid="Base_Column_List"/>
+        from chapter
+        <where>
+            <if test="courseId != null and courseId>0">
+                and course_id = #{courseId,jdbcType=INTEGER}
+            </if>
+            <if test="title != null and !&quot;&quot;.equals(title.trim())">
+                and title like '%' #{title,jdbcType=VARCHAR} '%'
+            </if>
+            <if test="createDate != null">
+                and create_date = #{createDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from chapter
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByCourseId" parameterType="java.lang.Integer">
+        delete from chapter
+        where course_id = #{courseId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.zyq.springtest.bean.Chapter">
+    insert into chapter (id, course_id, title, 
+      create_date)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="com.zyq.springtest.bean.Chapter">
+        insert into chapter
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="courseId != null">
+                course_id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="courseId != null">
+                #{courseId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zyq.springtest.bean.Chapter">
+        update chapter
+        <set>
+            <if test="courseId != null">
+                course_id = #{courseId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.zyq.springtest.bean.Chapter">
+    update chapter
+    set course_id = #{courseId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

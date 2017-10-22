@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyq.springtest.dao.CommentMapper">
+    <resultMap id="BaseResultMap" type="com.zyq.springtest.bean.Comment">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="course_id" property="courseId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="to_user_id" property="toUserId" jdbcType="INTEGER"/>
+        <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP"/>
+        <result column="readed" property="readed" jdbcType="BIT"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.zyq.springtest.bean.Comment" extends="BaseResultMap">
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, course_id, user_id, to_user_id, comment_time, readed
+  </sql>
+    <sql id="Blob_Column_List">
+    content
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from comment
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByOffsetAndCourseId" resultMap="ResultMapWithBLOBs" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from comment
+        where course_id=#{courseId,jdbcType=INTEGER}
+        order by comment_time DESC
+        limit #{offset,jdbcType=INTEGER},10
+    </select>
+    <select id="selectUnReadedByUserId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from comment
+        where to_user_id=#{id,jdbcType=INTEGER}
+        and  user_id!=#{id,jdbcType=INTEGER}
+        order by comment_time DESC
+    </select>
+    <select id="selectBySelective" resultMap="ResultMapWithBLOBs"
+            parameterType="com.zyq.springtest.bean.Comment">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from comment
+        <where>
+            <if test="courseId != null and 0!=courseId">
+                and course_id=#{courseId,jdbcType=INTEGER}
+            </if>
+            <if test="userId != null and 0!=userId">
+                and user_id=#{userId,jdbcType=INTEGER}
+            </if>
+            <if test="toUserId != null and 0!=toUserId">
+                and to_user_id=#{toUserId,jdbcType=INTEGER}
+            </if>
+            <if test="commentTime != null">
+                and comment_time=#{commentTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="readed != null">
+                and readed = #{readed,jdbcType=BIT}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByCourseId" parameterType="java.lang.Integer">
+    delete from comment
+    where course_id = #{courseIsd,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.zyq.springtest.bean.Comment">
+    insert into comment (id, course_id, user_id, 
+      to_user_id, comment_time, readed, 
+      content)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{toUserId,jdbcType=INTEGER}, #{commentTime,jdbcType=TIMESTAMP}, #{readed,jdbcType=BIT}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.zyq.springtest.bean.Comment">
+        insert into comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="courseId != null">
+                course_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="toUserId != null">
+                to_user_id,
+            </if>
+            <if test="commentTime != null">
+                comment_time,
+            </if>
+            <if test="readed != null">
+                readed,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="courseId != null">
+                #{courseId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="toUserId != null">
+                #{toUserId,jdbcType=INTEGER},
+            </if>
+            <if test="commentTime != null">
+                #{commentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="readed != null">
+                #{readed,jdbcType=BIT},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zyq.springtest.bean.Comment">
+        update comment
+        <set>
+            <if test="courseId != null">
+                course_id = #{courseId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="toUserId != null">
+                to_user_id = #{toUserId,jdbcType=INTEGER},
+            </if>
+            <if test="commentTime != null">
+                comment_time = #{commentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="readed != null">
+                readed = #{readed,jdbcType=BIT},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zyq.springtest.bean.Comment">
+    update comment
+    set course_id = #{courseId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      to_user_id = #{toUserId,jdbcType=INTEGER},
+      comment_time = #{commentTime,jdbcType=TIMESTAMP},
+      readed = #{readed,jdbcType=BIT},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.zyq.springtest.bean.Comment">
+    update comment
+    set course_id = #{courseId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      to_user_id = #{toUserId,jdbcType=INTEGER},
+      comment_time = #{commentTime,jdbcType=TIMESTAMP},
+      readed = #{readed,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

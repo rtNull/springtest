@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyq.springtest.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.zyq.springtest.bean.User">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="tel" property="tel" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="TINYINT"/>
+        <result column="head_img" property="headImg" jdbcType="VARCHAR"/>
+        <result column="role" property="role" jdbcType="TINYINT"/>
+        <result column="token" property="token" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.zyq.springtest.bean.User" extends="BaseResultMap">
+        <result column="introduction" property="introduction" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, tel, password, name, sex, head_img, role, token
+  </sql>
+    <sql id="Blob_Column_List">
+    introduction
+  </sql>
+    <select id="selectBySelective" resultMap="ResultMapWithBLOBs" parameterType="com.zyq.springtest.bean.User">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from user
+        <where>
+            <if test="tel != null">
+                and tel=#{tel,jdbcType=VARCHAR}
+            </if>
+            <if test="password != null">
+                and password=#{password,jdbcType=VARCHAR}
+            </if>
+            <if test="name != null">
+                and name=#{name,jdbcType=VARCHAR}
+            </if>
+            <if test="sex= null">
+                and sex=#{sex,jdbcType=TINYINT}
+            </if>
+            <if test="role != null">
+                and role = #{role,jdbcType=TINYINT}
+            </if>
+        </where>
+    </select>
+    <select id="selectByTelAndPass" resultMap="ResultMapWithBLOBs" parameterType="com.zyq.springtest.bean.User">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from user
+        where tel = #{tel,jdbcType=VARCHAR}
+        AND password = #{password,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByToken" resultMap="ResultMapWithBLOBs" parameterType="com.zyq.springtest.bean.User">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from user
+        where token = #{token,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByTel" resultMap="ResultMapWithBLOBs" parameterType="com.zyq.springtest.bean.User">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from user
+        where tel = #{tel,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.zyq.springtest.bean.User">
+    insert into user (id, tel, password,
+    name, sex, head_img,
+    role, token, introduction
+    )
+    values (#{id,jdbcType=INTEGER}, #{tel,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+    #{name,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{headImg,jdbcType=VARCHAR},
+    #{role,jdbcType=TINYINT}, #{token,jdbcType=VARCHAR}, #{introduction,jdbcType=LONGVARCHAR}
+    )
+  </insert>
+    <insert id="insertSelective" parameterType="com.zyq.springtest.bean.User">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="tel != null">
+                tel,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="headImg != null">
+                head_img,
+            </if>
+            <if test="role != null">
+                role,
+            </if>
+            <if test="token != null">
+                token,
+            </if>
+            <if test="introduction != null">
+                introduction,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="tel != null">
+                #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=TINYINT},
+            </if>
+            <if test="headImg != null">
+                #{headImg,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                #{role,jdbcType=TINYINT},
+            </if>
+            <if test="token != null">
+                #{token,jdbcType=VARCHAR},
+            </if>
+            <if test="introduction != null">
+                #{introduction,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zyq.springtest.bean.User">
+        update user
+        <set>
+            <if test="tel != null">
+                tel = #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=TINYINT},
+            </if>
+            <if test="headImg != null">
+                head_img = #{headImg,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null">
+                role = #{role,jdbcType=TINYINT},
+            </if>
+            <if test="token != null">
+                token = #{token,jdbcType=VARCHAR},
+            </if>
+            <if test="introduction != null">
+                introduction = #{introduction,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zyq.springtest.bean.User">
+    update user
+    set tel = #{tel,jdbcType=VARCHAR},
+    password = #{password,jdbcType=VARCHAR},
+    name = #{name,jdbcType=VARCHAR},
+    sex = #{sex,jdbcType=TINYINT},
+    head_img = #{headImg,jdbcType=VARCHAR},
+    role = #{role,jdbcType=TINYINT},
+    token = #{token,jdbcType=VARCHAR},
+    introduction = #{introduction,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.zyq.springtest.bean.User">
+    update user
+    set tel = #{tel,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=TINYINT},
+      head_img = #{headImg,jdbcType=VARCHAR},
+      role = #{role,jdbcType=TINYINT},
+      token = #{token,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

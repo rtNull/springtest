@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyq.springtest.dao.CourseMapper">
+    <resultMap id="BaseResultMap" type="com.zyq.springtest.bean.Course">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="subject_id" property="subjectId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="course_name" property="courseName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.zyq.springtest.bean.Course" extends="BaseResultMap">
+        <result column="introduction" property="introduction" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, subject_id, user_id, course_name
+  </sql>
+    <sql id="Blob_Column_List">
+    introduction
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from course
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByOffset" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from course
+        limit #{offset,jdbcType=INTEGER},10
+    </select>
+    <select id="selectBySelective" resultMap="ResultMapWithBLOBs" parameterType="com.zyq.springtest.bean.Course">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from course
+        <where>
+            <if test="userId != null and 0!=userId">
+                and user_id=#{userId,jdbcType=INTEGER}
+            </if>
+            <if test="subjectId != null and 0!=subjectId">
+                and subject_id=#{subjectId,jdbcType=INTEGER}
+            </if>
+            <if test="courseName != null and !&quot;&quot;.equals(courseName.trim())">
+                and course_name like '%' #{courseName,jdbcType=VARCHAR} '%'
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from course
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteBySubjectId" parameterType="java.lang.Integer">
+        delete from course
+        where subject_id = #{subject_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.zyq.springtest.bean.Course">
+    insert into course (id, subject_id, user_id, course_name,
+      introduction)
+    values (#{id,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{courseName,jdbcType=VARCHAR},
+      #{introduction,jdbcType=LONGVARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.zyq.springtest.bean.Course">
+        insert into course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="subjectId != null">
+                subject_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="courseName != null">
+                course_name,
+            </if>
+            <if test="introduction != null">
+                introduction,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="subjectId != null">
+                #{subjectId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="courseName != null">
+                #{courseName,jdbcType=VARCHAR},
+            </if>
+            <if test="introduction != null">
+                #{introduction,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zyq.springtest.bean.Course">
+        update course
+        <set>
+            <if test="subjectId != null">
+                subject_id = #{subjectId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="courseName != null">
+                course_name = #{courseName,jdbcType=VARCHAR},
+            </if>
+            <if test="introduction != null">
+                introduction = #{introduction,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zyq.springtest.bean.Course">
+    update course
+    set subject_id = #{subjectId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      course_name = #{courseName,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.zyq.springtest.bean.Course">
+    update course
+    set subject_id = #{subjectId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      course_name = #{courseName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
